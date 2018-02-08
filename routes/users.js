@@ -19,7 +19,7 @@ router
     if (!req.account) {
       const error = new Error('Unauthorized')
       error.status = 401
-      next(error)
+      next(error) 
     }
 
     res.json(req.account)
