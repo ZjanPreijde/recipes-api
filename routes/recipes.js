@@ -59,11 +59,11 @@ router
     const id = req.params.id
 
     Recipe.deleteOne({ id: id })
-      // .then((recipe) => {
-      //   if (!recipe) { return next() }
-      //   res.json(recipe)
-      // })
-      // .catch((error) => next(error))
+      .then((recipe) => {
+        if (!recipe) { return next() }
+        res.json(recipe)
+      })
+      .catch((error) => next(error))
   })
 
 module.exports = router
