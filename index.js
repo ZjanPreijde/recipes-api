@@ -1,6 +1,8 @@
 const bodyParser = require('body-parser')
-const express = require('express')
-const { recipes } = require('./routes')
+const express    = require('express')
+const { recipes, users } = require('./routes')
+// const { recipes } = require('./routes')
+// const { users }   = require('./routes')
 
 const port = process.env.PORT || 3030
 
@@ -11,6 +13,8 @@ app
 
   // Our recipes routes
   .use(recipes)
+  // Our users routes
+  .use(users)
 
   // catch 404 and forward to error handler
   .use((req, res, next) => {
