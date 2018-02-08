@@ -1,20 +1,33 @@
+const bodyParser = require('body-parser')
 const express = require('express')
-const { Recipe } = require('./models')
+const { recipes } = require('./routes')
 
-const PORT = process.env.PORT || 3030
+const port = process.env.PORT || 3030
 
 let app = express()
+app
+  .use(bodyParser.urlencoded({ extended: true }))
+  .use(bodyParser.json())
 
-app.get('/recipes', (req, res, next) => {
-  Recipe.find()
-    // Newest recipes first
-    .sort({ createdAt: -1 })
-    // Send the data in JSON format
-    .then((recipes) => res.json(recipes))
-    // Forward any errors to error handler
-    .catch((error) => next(error))
-})
+  // Our recipes routes
+  .use(recipes)
 
-app.listen(PORT, () => {
-  console.log(`Server is listening on port ${PORT}`)
-})
+  // catch 404 and forward to error handler
+  .use((req, res, next) => {
+    const err = new Error('Not Found')
+    err.status = 404
+    next(err)
+  })
+
+  // final error handler
+  .use((err, req, res, next) => {
+    res.status(err.status || 500)
+    res.send({
+      message: err.message,
+      error: app.get('env') === 'development' ? err : {}
+    })
+  })
+
+  .listen(port, () => {
+    console.log(`Server is listening on port ${port}`)
+  })
