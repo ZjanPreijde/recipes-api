@@ -57,12 +57,13 @@ router
   // Destroy recipe
   .delete('/recipes/:id', (req, res, next) => {
     const id = req.params.id
-
-    Recipe.deleteOne({ id: id })
+    Recipe.findById(id)
       .then((recipe) => {
         if (!recipe) { return next() }
-        res.json(recipe)
-      })
+        recipe.remove()
+          .then((removed) => {
+             res.json(removed)
+           })
       .catch((error) => next(error))
   })
 

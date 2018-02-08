@@ -1,30 +1,9 @@
 // routes/users.js
 const router = require('express').Router()
 const { User } = require('../models')
+const passport = require('../config/auth')
 
 router
-  // Index of users
-  .get('/users', (req, res, next) => {
-    User.find()
-      // Newest users first
-      .sort({ createdAt: -1 })
-      // Send the data in JSON format
-      .then((users) => res.json(users))
-      // Throw a 500 error if something goes wrong
-      .catch((error) => next(error))
-  })
-  // Show 1 user
-  .get('/users/:id', (req, res, next) => {
-    const id = req.params.id
-
-    User.findById(id)
-      .then( (user) => {
-        if (!user) { return next() }
-        res.json({name: user.name, email: user.email, createdAt: user.createdAt, updatedAt: user.updatedAt})
-
-      })
-      .catch((error) => next(error))
-  })
   .post('/users', (req, res, next) => {
     User.register(new User({name: req.body.name, email: req.body.email}), req.body.password, (err, user) => {
       if (err) {
@@ -35,4 +14,15 @@ router
       res.status(201).send(user)
     })
   })
+  .get('/users/me', passport.authorize('jwt', { session: false }), (req, res, next) => {
+    // Once authorized, the user data should be in `req.account`!
+    if (!req.account) {
+      const error = new Error('Unauthorized')
+      error.status = 401
+      next(error)
+    }
+
+    res.json(req.account)
+  })
+
 module.exports = router
