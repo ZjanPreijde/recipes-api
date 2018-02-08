@@ -64,6 +64,7 @@ router
           .then((removed) => {
              res.json(removed)
            })
+         })
       .catch((error) => next(error))
   })
 
