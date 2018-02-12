@@ -51,9 +51,6 @@ router
       .catch((error) => next(error))
   })
 
-  // Partial update recipe
-  // .patch
-
   // Destroy recipe
   .delete('/recipes/:id', (req, res, next) => {
     const id = req.params.id
